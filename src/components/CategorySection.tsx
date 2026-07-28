@@ -13,9 +13,11 @@ export default function CategorySection({
   secondary: Article[];
 }) {
   return (
-    <section className="border-t border-slate py-10">
+    <section className="border-t-2 border-colonial py-10">
       <div className="mb-6 flex items-baseline justify-between">
-        <h2 className="text-2xl font-bold text-navy">{category.label}</h2>
+        <h2 className="border-l-4 border-colonial pl-3 text-2xl font-bold text-navy">
+          {category.label}
+        </h2>
         <Link
           href={`/category/${category.slug}`}
           className="text-sm font-semibold text-sound hover:text-navy"

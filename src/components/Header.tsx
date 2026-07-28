@@ -13,37 +13,47 @@ const NAV_ITEMS = [
 
 export default function Header() {
   return (
-    <header className="relative border-b border-slate bg-navy">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="shrink-0">
-          <span className="block font-headline text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Constitution State Chronicle
-          </span>
-          <span className="block text-xs uppercase tracking-widest text-slate">
-            Connecticut News, Leadership, Business, Health, and Community
-          </span>
-        </Link>
+    <header className="relative border-b border-slate">
+      <div className="bg-colonial">
+        <div className="mx-auto max-w-6xl px-4 py-1.5 text-center text-xs font-semibold uppercase tracking-[0.2em] text-parchment sm:px-6 lg:px-8">
+          Connecticut&rsquo;s Independent Newsroom
+        </div>
+      </div>
 
-        <nav aria-label="Primary" className="hidden md:block">
-          <ul className="flex items-center gap-6">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm font-semibold text-white hover:text-copper"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+      <div className="border-b-2 border-copper bg-navy">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
+          <Link href="/" className="shrink-0">
+            <span className="block font-headline text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Constitution State Chronicle
+            </span>
+            <span className="mt-1 block text-xs uppercase tracking-widest text-slate">
+              Connecticut News, Leadership, Business, Health, and Community
+            </span>
+          </Link>
 
-        <div className="hidden max-w-xs flex-1 md:block">
-          <SearchBar />
+          <div className="hidden max-w-xs flex-1 md:block">
+            <SearchBar />
+          </div>
+
+          <MobileNavigation navItems={NAV_ITEMS} />
         </div>
 
-        <MobileNavigation navItems={NAV_ITEMS} />
+        <nav aria-label="Primary" className="hidden border-t border-white/10 md:block">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <ul className="flex items-center gap-8">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="block border-b-2 border-transparent py-3 text-sm font-semibold uppercase tracking-wide text-white hover:border-copper hover:text-copper"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
       </div>
     </header>
   );
