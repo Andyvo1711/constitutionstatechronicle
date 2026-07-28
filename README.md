@@ -1,36 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Constitution State Chronicle
 
-## Getting Started
+A premium, production-ready local news website for the State of Connecticut — covering
+education, healthcare, business leadership, finance & economy, and beauty & wellness across
+Hartford, New Haven, Stamford, Bridgeport, Greenwich, Norwalk, Waterbury, Danbury, New London,
+West Hartford, Fairfield County, and other Connecticut communities.
 
-First, run the development server:
+## Technology Stack
+
+- [Next.js](https://nextjs.org) (App Router) + TypeScript
+- [Tailwind CSS v4](https://tailwindcss.com)
+- Markdown files for article storage — **no database, no CMS, no external backend**
+- [`gray-matter`](https://github.com/jonschlinkert/gray-matter) for frontmatter parsing
+- [`remark`](https://github.com/remarkjs/remark) + [`remark-html`](https://github.com/remarkjs/remark-html) for Markdown → HTML rendering
+- `next/font` (Playfair Display for headlines, Source Sans 3 for body/UI)
+
+## Folder Structure
+
+```text
+constitution-state-chronicle/
+├── content/
+│   └── articles/            75 Markdown article files
+├── public/
+├── scripts/
+│   └── validate-content.ts  Content validation script
+├── src/
+│   ├── app/
+│   │   ├── article/[slug]/page.tsx
+│   │   ├── category/[slug]/page.tsx
+│   │   ├── search/page.tsx
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── not-found.tsx
+│   │   └── page.tsx
+│   ├── components/          Header, Footer, SearchBar, MobileNavigation,
+│   │                        HeroArticle, ArticleCard, CategorySection,
+│   │                        Pagination, RelatedArticles, CategoryBadge
+│   ├── config/
+│   │   └── categories.ts    Centralized category configuration
+│   ├── lib/
+│   │   ├── articles.ts      Article loading/parsing/search utilities
+│   │   └── date.ts
+│   └── types/
+│       └── article.ts       Strict Article TypeScript interface
+├── next.config.ts
+├── package.json
+└── README.md
+```
+
+## Installation
+
+```bash
+npm install
+```
+
+## Local Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Content Validation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Validates that all 75 Markdown files exist, every category has exactly 15 articles, all required
+frontmatter fields are present and well-formed, slugs match filenames and are unique, cover image
+URLs are unique Unsplash/Pexels URLs, and `featured` values are booleans.
 
-## Learn More
+```bash
+npm run validate:content
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Production Build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Content validation runs automatically before `next build` via the `prebuild` script.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run validate:content
+npm run lint
+npm run build
+npm start
+```
 
-## Deploy on Vercel
+## Adding a New Markdown Article
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Create a new file in `content/articles/` named after the article's slug, e.g.
+`content/articles/connecticut-universities-expand-ai-programs.md`:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```yaml
+---
+title: "Article Title"
+slug: "connecticut-universities-expand-ai-programs"
+excerpt: "A concise summary of the article."
+category: "education"
+date: "2026-06-15"
+coverImage: "https://images.unsplash.com/photo-XXXXXXX?q=80&w=1600&auto=format&fit=crop"
+featured: false
+imageCredit: "Photo: Unsplash/Photographer Name"
+---
+
+Article body in Markdown, starting with a paragraph (no top-level `#` heading — the page renders
+the title separately). Include at least two `##` subheadings.
+```
+
+### Required Frontmatter Fields
+
+| Field        | Type    | Notes                                                        |
+| ------------ | ------- | ------------------------------------------------------------- |
+| `title`      | string  | Article headline                                              |
+| `slug`       | string  | Must exactly match the filename (without `.md`)                |
+| `excerpt`    | string  | Short summary shown on cards and search results                |
+| `category`   | string  | One of the five category slugs below                           |
+| `date`       | string  | `YYYY-MM-DD`; used for sorting only — shown solely on the article page |
+| `coverImage` | string  | A real, working `images.unsplash.com` or `images.pexels.com` URL, unique across all articles |
+| `featured`   | boolean | Only one article site-wide should be `true` (homepage hero)    |
+| `imageCredit`| string  | e.g. `Photo: Unsplash/Jane Smith`, shown beneath the cover image |
+
+Do **not** add `description` or `author` fields.
+
+### Category Slugs
+
+| Label              | Slug               |
+| ------------------ | ------------------- |
+| Education           | `education`          |
+| Healthcare           | `healthcare`          |
+| Business Leaders     | `business-leaders`    |
+| Finance & Economy    | `finance-economy`     |
+| Beauty & Wellness    | `beauty-wellness`     |
+
+### Image Requirements
+
+- Real, high-resolution, working URLs from `images.unsplash.com` or `images.pexels.com` only.
+- No placeholder services (`picsum.photos`, generated color blocks, local empty files, etc.).
+- Each cover image URL must be unique — never reused across articles.
+- Image content should clearly match the article's category and subject.
+
+## Notes
+
+- Publication dates appear **only** on `/article/[slug]` — never on the homepage, search page,
+  category pages, related-article cards, header, or footer.
+- Total article counts are never displayed anywhere on the site.
+- Category pages are paginated at 6 articles per page via a `?page=` query parameter.
