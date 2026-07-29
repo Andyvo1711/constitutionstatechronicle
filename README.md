@@ -140,4 +140,4 @@ Do **not** add `description` or `author` fields.
 - Publication dates appear **only** on `/article/[slug]` — never on the homepage, search page,
   category pages, related-article cards, header, or footer.
 - Total article counts are never displayed anywhere on the site.
-- Category pages are paginated at 6 articles per page via a `?page=` query parameter.
+- Category pages display all articles in the category on a single page (no pagination).
